@@ -1,11 +1,14 @@
 const Ticket = require('./Ticket');
 const { readFile, writeFile } = require('./utils');
+const fs = require('fs')
 
 const tickets = Symbol('tickets');
 
 class TicketCollection {
     constructor() {
-        this[tickets] = [];
+        (async function () {
+            this[tickets] = await fs.promises.readFile('./data/db.json');
+        }.call(this));
     }
 
     /**
@@ -18,7 +21,7 @@ class TicketCollection {
     create(username, price) {
         const ticket = new Ticket(username, price);
         this[tickets].push(ticket);
-
+        writeFile(this[tickets]);
         return ticket;
     }
 
@@ -34,6 +37,7 @@ class TicketCollection {
             const ticket = this.create(username, price);
             result.push(ticket);
         }
+        writeFile(this[tickets]);
         return result;
     }
 
@@ -84,9 +88,11 @@ class TicketCollection {
      */
     updateById(ticketId, ticketBody) {
         const ticket = this.findById(ticketId);
-        ticket.username = ticketBody.username ?? ticket.username;
-        ticket.price = ticketBody.price ?? ticket.price;
-
+        if(ticket) {
+            ticket.username = ticketBody.username ?? ticket.username;
+            ticket.price = ticketBody.price ?? ticket.price;   
+        }
+        writeFile(this[tickets]);
         return ticket;
     }
 
@@ -106,6 +112,7 @@ class TicketCollection {
 
             (ticket) => this.updateById(ticket.id, ticketBody)
         );
+        writeFile(this[tickets]);
         return updatedTickets;
     }
 
@@ -127,6 +134,7 @@ class TicketCollection {
             return false;
         } else {
             thsi[tickets].splice(index, 1);
+            writeFile(this[tickets]);
             return true;
         }
     }
@@ -147,7 +155,7 @@ class TicketCollection {
 
             (ticket) => this.deleteById(ticket.id)
         );
-
+        writeFile(this[tickets]);
         return deletedResult;
     }
 
@@ -179,5 +187,5 @@ class TicketCollection {
     }
 }
 
-const collection = new TicketCollection();
-module.exports = collection;
+const ticketCollections = new TicketCollection();
+module.exports = ticketCollections;
