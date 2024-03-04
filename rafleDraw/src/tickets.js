@@ -23,6 +23,22 @@ class TicketCollection {
     }
 
     /**
+     * create bulk tickets
+     * @param {string} username 
+     * @param {number} price 
+     * @param {number} quantity 
+     */
+    createBulk(username, price, quantity) {
+        const result = [];
+        for (let i = 0; i < quantity; i++) {
+            const ticket = this.create(username, price);
+            result.push(ticket);
+        }
+        return result;
+    }
+
+
+    /**
      * return all tickets from db
      */
     find() {
@@ -75,6 +91,25 @@ class TicketCollection {
     }
 
     /**
+     * Bulk update by  username
+     * @param {string} username 
+     * @param {{username: string, price: number}} ticketBody 
+     * @return {Ticket[]}
+     */
+    updateBulk(username, ticketBody) {
+        const userTickets = this.findByUsername(username);
+
+        const updatedTickets = userTickets.map(
+            /**
+             * @param {Ticket} ticket
+             */
+
+            (ticket) => this.updateById(ticket.id, ticketBody)
+        );
+        return updatedTickets;
+    }
+
+    /**
      * delete ticket by Id
      * @param {string} ticktId 
      * @return {boolean}
@@ -95,6 +130,54 @@ class TicketCollection {
             return true;
         }
     }
+
+
+    /**
+     * bulk delete by username
+     * @param {string} username
+     * @return {boolean[]} 
+     */
+    deleteBulk(username) {
+        const userTickets = this.findByUsername(username);
+
+        const deletedResult = userTickets.map(
+            /**
+             * @param {Ticket} ticket
+             */
+
+            (ticket) => this.deleteById(ticket.id)
+        );
+
+        return deletedResult;
+    }
+
+    /**
+     * Find winner
+     * @param {number} winnerCount 
+     * @return {Ticket[]}
+     */
+    draw(winnerCount) {
+        const winnerIndexes = new Array(winnerCount);
+
+        let winnerIndex = 0;
+        while(winnderIndex < winnerCount) {
+            let ticketIndex = Math.floor(Math.random() * this[tickets]. length);
+            if(!winnerIndexes.includes(ticketIndex)) {
+                winnerIndexes[winnerIndex++] = ticketIndex;
+                continue;  
+            } 
+        }
+
+        const winners = winnerIndexes.map(
+            /**
+             * @param {number} index
+             */
+
+            (index) => this[tickets][index]
+        );
+        return winners; 
+    }
 }
 
 const collection = new TicketCollection();
+module.exports = collection;
