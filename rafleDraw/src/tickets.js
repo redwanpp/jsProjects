@@ -1,13 +1,12 @@
 const Ticket = require('./Ticket');
 const { readFile, writeFile } = require('./utils');
-const fs = require('fs')
 
 const tickets = Symbol('tickets');
 
 class TicketCollection {
     constructor() {
         (async function () {
-            this[tickets] = await fs.promises.readFile('./data/db.json');
+            this[tickets] = await readFile();
         }.call(this));
     }
 

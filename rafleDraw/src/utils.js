@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const dbPath = path.resolve('data', 'db.json');
+const dbPath = path.resolve('data', './data/db.json');
 
 exports.readFile = async () => {
     const data = await fs.readFile(dbPath);

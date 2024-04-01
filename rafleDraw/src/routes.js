@@ -6,9 +6,9 @@ router.route('/t/:id').get(findById).put(updateById).delete(deleteById);
 
 router.route('/u/:username').get(findByUsername).put(updateByUsername).delete(deleteByUsername);
 
-router.post('/bulk', sellSingleTicket);
+router.post('/bulk',sellBukkTicket);
 router.get('draw', drawWinners);
 
-router.route('/').get(findAll).post(sellBukkTicket);
+router.route('/').get(findAll).post(sellSingleTicket);
 
 module.exports = router;
